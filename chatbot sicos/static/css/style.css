@@ -1,0 +1,425 @@
+/* ===== VARIABLES & RESET ===== */
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+:root {
+  --bg-dark:       #0d0f14;
+  --bg-sidebar:    #13161e;
+  --bg-principal:  #181c26;
+  --bg-input:      #1f2433;
+  --accent:        #6c63ff;
+  --accent-glow:   #6c63ff55;
+  --accent-2:      #ff6584;
+  --bubble-user:   #6c63ff;
+  --bubble-bot:    #1f2433;
+  --text-primary:  #eef0f8;
+  --text-muted:    #7a7f9a;
+  --border:        #2a2f45;
+  --radius-bubble: 18px;
+  --sidebar-w:     260px;
+  --transition:    0.25s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: "Google Sans", sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* ===== LAYOUT WRAPPER ===== */
+.wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* COLUMNA IZQUIERDA */
+.app {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;   /* ← apila sidebar, botón e historial verticalmente */
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* COLUMNA DERECHA */
+.principal {
+  flex: 1;                  /* ← toma el resto del espacio */
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-principal);
+  position: relative;
+  min-width: 0;
+}
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 20px;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow decorativo en sidebar */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Título "Mi IA" */
+.sidebar > *:first-child,
+.sidebar {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.sidebar img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.sidebar img:hover {
+  transform: scale(1.06) rotate(2deg);
+  box-shadow: 0 0 32px var(--accent-glow);
+}
+
+/* ===== NUEVO CHAT BUTTON ===== */
+.nuevo-chat {
+  display: block;
+  width: calc(var(--sidebar-w) - 32px);
+  margin: 0 16px;
+  padding: 11px 0;
+  background: linear-gradient(135deg, var(--accent) 0%, #897bff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 4px 18px var(--accent-glow);
+}
+
+.nuevo-chat:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 26px var(--accent-glow);
+}
+
+.nuevo-chat:active {
+  transform: translateY(0);
+}
+
+/* ===== HISTORIAL ===== */
+.historial {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.historial::-webkit-scrollbar { width: 4px; }
+.historial::-webkit-scrollbar-track { background: transparent; }
+.historial::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.chat-item {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), padding-left var(--transition);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-item::before {
+  content: '💬 ';
+  font-size: 0.8rem;
+}
+
+.chat-item:hover {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  padding-left: 20px;
+}
+
+.chat-item.active {
+  background: var(--accent-glow);
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+}
+
+/* ===== AREA PRINCIPAL ===== */
+.principal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-principal);
+  position: relative;
+  min-width: 0;
+}
+
+/* Fondo sutil con patrón de puntos */
+.principal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ===== ÁREA DE CHAT ===== */
+#chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+#chat::-webkit-scrollbar { width: 5px; }
+#chat::-webkit-scrollbar-track { background: transparent; }
+#chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ===== MENSAJES / GLOBOS ===== */
+.mensaje {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 78%;
+  animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Bot → izquierda */
+.mensaje.bot {
+  align-self: flex-start;
+}
+
+/* Usuario → derecha */
+.mensaje.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+/* Avatar */
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.mensaje.bot .avatar {
+  background: linear-gradient(135deg, var(--accent), #897bff);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.mensaje.user .avatar {
+  background: linear-gradient(135deg, var(--accent-2), #ff8fa3);
+}
+
+/* Globo de texto */
+.burbuja {
+  padding: 12px 16px;
+  border-radius: var(--radius-bubble);
+  font-size: 0.925rem;
+  line-height: 1.6;
+  max-width: 100%;
+  word-break: break-word;
+  position: relative;
+}
+
+.mensaje.bot .burbuja {
+  background: var(--bubble-bot);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  color: var(--text-primary);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+.mensaje.user .burbuja {
+  background: linear-gradient(135deg, var(--bubble-user), #897bff);
+  border-bottom-right-radius: 4px;
+  color: #fff;
+  box-shadow: 0 2px 16px var(--accent-glow);
+}
+
+/* Timestamp dentro del globo */
+.burbuja .tiempo {
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 6px;
+  opacity: 0.5;
+  text-align: right;
+}
+
+/* ===== CÓDIGO (Prism) ===== */
+pre[class*="language-"] {
+  border-radius: 10px;
+  margin: 8px 0 2px;
+  font-size: 0.8rem;
+  background: #0d0f14 !important;
+  border: 1px solid var(--border);
+}
+
+/* ===== BARRA DE ENTRADA ===== */
+.entrada {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  background: var(--bg-sidebar);
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 2;
+}
+
+.entrada input[type="text"],
+#mensaje {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 18px;
+  color: var(--text-primary);
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.925rem;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.entrada input[type="text"]::placeholder,
+#mensaje::placeholder {
+  color: var(--text-muted);
+}
+
+.entrada input[type="text"]:focus,
+#mensaje:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.entrada button[type="button"],
+.entrada button {
+  padding: 13px 22px;
+  background: linear-gradient(135deg, var(--accent) 0%, #897bff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  box-shadow: 0 4px 16px var(--accent-glow);
+  white-space: nowrap;
+}
+
+.entrada button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px var(--accent-glow);
+}
+
+.entrada button:active {
+  transform: translateY(0);
+  opacity: 0.85;
+}
+
+/* ===== TYPING INDICATOR ===== */
+.typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 10px 14px;
+}
+
+.typing span {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: bounce 1.1s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) { animation-delay: 0.18s; }
+.typing span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%            { transform: translateY(-6px); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  :root { --sidebar-w: 200px; }
+  #chat { padding: 20px 14px 12px; }
+  .entrada { padding: 12px 14px; gap: 8px; }
+  .mensaje { max-width: 90%; }
+}
+
+@media (max-width: 480px) {
+  .sidebar { display: none; }
+  .nuevo-chat { display: none; }
+  .historial { display: none; }
+}
+
+.wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}

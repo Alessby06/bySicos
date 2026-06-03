@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Sicos</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="app">
+        <div class="sidebar">
+            Mi IA
+            <img src="/static/img/robot-chat-bot-concept-illustration-vector.jpg" alt="Logo">
+        </div>
+
+        <button class="nuevo-chat" onclick="nuevoChat()">+ Nuevo chat</button>
+
+        <div class="historial">
+            <div class="chat-item">Chat 1</div>
+            <div class="chat-item">Chat 2</div>
+            <div class="chat-item">Chat 3</div>
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA (chat principal) -->
+    <div class="principal">
+        <div id="chat"></div>
+
+        <div class="entrada">
+            <input type="text" id="mensaje" placeholder="Escriba su mensaje...">
+            <button type="button" onclick="enviar()">Enviar</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+<script src="{{ url_for('static',filename='js/chat.js') }}"></script>
+</body>
+</html>
